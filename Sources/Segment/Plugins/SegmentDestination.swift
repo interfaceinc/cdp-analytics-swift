@@ -179,10 +179,15 @@ extension SegmentDestination {
                     
                     // set up the task
                     let uploadTask = httpClient.startBatchUpload(writeKey: analytics.configuration.values.writeKey, batch: url) { [weak self] result in
+                        guard let self else {
+                          group.leave()
+                          return
+                        }
+                      
                         defer {
                             group.leave()
                         }
-                        guard let self else { return }
+                        
                         switch result {
                         case .success(_):
                             storage.remove(data: [url])
