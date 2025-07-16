@@ -56,7 +56,9 @@ public class HTTPClient {
     func startBatchUpload(writeKey: String, batch: URL, completion: @escaping (_ result: Result<Bool, Error>) -> Void) -> (any DataTask)? {
         guard let uploadURL = segmentURL(for: apiHost, path: "/b"), !networkPaused else {
             self.analytics?.reportInternalError(HTTPClientErrors.failedToOpenBatch)
-            completion(.failure(HTTPClientErrors.failedToOpenBatch))
+            DispatchQueue.main.async {
+              completion(.failure(HTTPClientErrors.failedToOpenBatch))
+            }
             return nil
         }
 

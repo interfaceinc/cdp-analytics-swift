@@ -212,9 +212,6 @@ extension SegmentDestination {
                     // we have a legit upload in progress now, so add it to our list.
                     if let upload = uploadTask {
                         add(uploadTask: UploadTaskInfo(url: url, data: nil, task: upload))
-                    } else {
-                        // we couldn't get a task, so we need to leave the group or things will hang.
-                        group.leave()
                     }
                 }
             }
