@@ -175,7 +175,14 @@ extension Analytics {
             return false
         }
         set(value) {
-            store.dispatch(action: System.ToggleEnabledAction(enabled: value))
+          if let system: System = store.currentState() {
+            store.dispatch(
+              action: System.ToggleEnabledAction(
+                enabled: value,
+                networkPaused: system.networkPaused
+              )
+            )
+          }
         }
     }
     
@@ -300,6 +307,25 @@ extension Analytics {
     /// - Returns: A string representing the version in "BREAKING.FEATURE.FIX" format.
     public static func version() -> String {
         return __segment_version
+    }
+  
+    public var networkPaused: Bool {
+      get {
+          if let system: System = store.currentState() {
+            return system.networkPaused
+          }
+          return false
+      }
+      set(value) {
+        if let system: System = store.currentState() {
+          store.dispatch(
+            action: System.ToggleEnabledAction(
+              enabled: system.enabled,
+              networkPaused: value
+            )
+          )
+        }
+      }
     }
 }
 

@@ -15,6 +15,7 @@ struct System: State {
     let settings: Settings?
     let running: Bool
     let enabled: Bool
+    let networkPaused: Bool
     let initializedPlugins: [Plugin]
     
     struct UpdateSettingsAction: Action {
@@ -25,6 +26,7 @@ struct System: State {
                                 settings: settings,
                                 running: state.running,
                                 enabled: state.enabled,
+                                networkPaused: state.networkPaused,
                                 initializedPlugins: state.initializedPlugins)
             return result
         }
@@ -38,18 +40,21 @@ struct System: State {
                           settings: state.settings,
                           running: running,
                           enabled: state.enabled,
+                          networkPaused: state.networkPaused,
                           initializedPlugins: state.initializedPlugins)
         }
     }
     
     struct ToggleEnabledAction: Action {
         let enabled: Bool
+        let networkPaused: Bool
         
         func reduce(state: System) -> System {
             return System(configuration: state.configuration,
                           settings: state.settings,
                           running: state.running,
                           enabled: enabled,
+                          networkPaused: networkPaused,
                           initializedPlugins: state.initializedPlugins)
         }
     }
@@ -62,6 +67,7 @@ struct System: State {
                           settings: state.settings,
                           running: state.running,
                           enabled: state.enabled,
+                          networkPaused: state.networkPaused,
                           initializedPlugins: state.initializedPlugins)
         }
     }
@@ -79,6 +85,7 @@ struct System: State {
                           settings: settings,
                           running: state.running,
                           enabled: state.enabled,
+                          networkPaused: state.networkPaused,
                           initializedPlugins: state.initializedPlugins)
         }
     }
@@ -97,6 +104,7 @@ struct System: State {
                           settings: state.settings,
                           running: state.running,
                           enabled: state.enabled,
+                          networkPaused: state.networkPaused,
                           initializedPlugins: initializedPlugins)
         }
     }
@@ -171,7 +179,14 @@ extension System {
                 settings = Settings(writeKey: configuration.values.writeKey, apiHost: HTTPClient.getDefaultAPIHost())
             }
         }
-        return System(configuration: configuration, settings: settings, running: false, enabled: true, initializedPlugins: [Plugin]())
+        return System(
+          configuration: configuration,
+          settings: settings,
+          running: false,
+          enabled: true,
+          networkPaused: false,
+          initializedPlugins: [Plugin]()
+        )
     }
 }
 
