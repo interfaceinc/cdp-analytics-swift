@@ -25,7 +25,13 @@ public class HTTPClient {
     private var apiHost: String
     private var apiKey: String
     private var cdnHost: String
-    private var networkPaused: Bool
+    private var networkPaused: Bool {
+      if let system: System = analytics?.store.currentState() {
+        return system.networkPaused
+      }
+      
+      return false
+    }
 
     private weak var analytics: Analytics?
 
@@ -35,7 +41,6 @@ public class HTTPClient {
         self.apiKey = analytics.configuration.values.writeKey
         self.apiHost = analytics.configuration.values.apiHost
         self.cdnHost = analytics.configuration.values.cdnHost
-        self.networkPaused = analytics.configuration.values.networkPaused
         self.session = analytics.configuration.values.httpSession()
     }
 
