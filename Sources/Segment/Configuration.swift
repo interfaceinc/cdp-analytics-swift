@@ -52,6 +52,7 @@ public class Configuration {
         var writeKey: String
         var application: Any? = nil
         var trackApplicationLifecycleEvents: Bool = true
+        var networkPaused: Bool = false
         var flushAt: Int = 20
         var flushInterval: TimeInterval = 30
         var defaultSettings: Settings? = nil
@@ -282,6 +283,12 @@ public extension Configuration {
     func httpSession(_ httpSession: @escaping @autoclosure () -> any HTTPSession) -> Configuration {
         values.httpSession = httpSession
         return self
+    }
+  
+    @discardableResult
+    func networkPaused(_ paused: Bool) -> Configuration {
+      values.networkPaused = paused
+      return self
     }
 }
 

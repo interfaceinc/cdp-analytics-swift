@@ -25,6 +25,7 @@ public class HTTPClient {
     private var apiHost: String
     private var apiKey: String
     private var cdnHost: String
+    private var networkPaused: Bool
 
     private weak var analytics: Analytics?
 
@@ -34,7 +35,7 @@ public class HTTPClient {
         self.apiKey = analytics.configuration.values.writeKey
         self.apiHost = analytics.configuration.values.apiHost
         self.cdnHost = analytics.configuration.values.cdnHost
-        
+        self.networkPaused = analytics.configuration.values.networkPaused
         self.session = analytics.configuration.values.httpSession()
     }
 
@@ -53,7 +54,7 @@ public class HTTPClient {
     ///   - completion: The closure executed when done. Passes if the task should be retried or not if failed.
     @discardableResult
     func startBatchUpload(writeKey: String, batch: URL, completion: @escaping (_ result: Result<Bool, Error>) -> Void) -> (any DataTask)? {
-        guard let uploadURL = segmentURL(for: apiHost, path: "/b") else {
+        guard let uploadURL = segmentURL(for: apiHost, path: "/b"), !networkPaused else {
             self.analytics?.reportInternalError(HTTPClientErrors.failedToOpenBatch)
             completion(.failure(HTTPClientErrors.failedToOpenBatch))
             return nil
@@ -78,7 +79,7 @@ public class HTTPClient {
     ///   - completion: The closure executed when done. Passes if the task should be retried or not if failed.
     @discardableResult
     func startBatchUpload(writeKey: String, data: Data, completion: @escaping (_ result: Result<Bool, Error>) -> Void) -> (any UploadTask)? {
-        guard let uploadURL = segmentURL(for: apiHost, path: "/b") else {
+        guard let uploadURL = segmentURL(for: apiHost, path: "/b"), !networkPaused else {
             self.analytics?.reportInternalError(HTTPClientErrors.failedToOpenBatch)
             completion(.failure(HTTPClientErrors.failedToOpenBatch))
             return nil
